@@ -128,6 +128,21 @@ def spec_norm(mel_spectrogram):
     return normalized_mel_spectrogram.reshape((1,h,w))
 
 
+def normalize_transform(pretrained=True):
+    from torchvision import transforms
+    if pretrained: # Normalization for pre-trained weights.
+        normalize = transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+            )
+    else: # Normalization when training from scratch.
+        normalize = transforms.Normalize(
+            mean=[0.5, 0.5, 0.5],
+            std=[0.5, 0.5, 0.5]
+        )
+    return normalize
+
+
 class AudioDataset(Dataset):
     def __init__(self,audio_df, transform=None, is_train=True):
         self.audio_df = audio_df
@@ -147,22 +162,20 @@ class AudioDataset(Dataset):
         audio = torch.tensor(audio)
         audio = crop_or_pad(audio)
 #         label_1hot = one_hot(torch.tensor(label), num_classes=CONFIG.num_classes)
-        if self.is_train:
-            audio= audio_augment(audio)
+#         if self.is_train:
+#             audio= audio_augment(audio)
         # Spectrumgram Augmentations
         spec = get_spectrogram(audio)
         if self.is_train:
             spec = spec_augmentation(spec).reshape((1, spec[0].shape[0], 
             spec[0].shape[1]))
-        # resize Spectrumgram
-        resize = torchvision.transforms.Resize(CONFIG.img_size)
-        spec =  resize(spec)
-        # Normalize
-        spec =spec_norm(spec)[0]
-        # Conver GRAY into RGB
-#         spec_img = torch.tensor(cv2.cvtColor(spec.numpy()
-#     , cv2.COLOR_GRAY2RGB), dtype=float)
+        spec = spec[0]
+
         spec_img = torch.stack([spec,spec,spec],dim=0)
+        
+        # normalize
+        normalizer = normalize_transform()
+        spec_img = normalizer(spec_img)
         
 #         sample  = {'img':spec_img,'label':label_1hot}
         
