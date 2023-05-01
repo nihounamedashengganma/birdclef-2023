@@ -18,6 +18,14 @@ import torchvision
 import cv2
 
 
+# 固定随机数种子
+def fix_seed(seed):
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+
 class CONFIG:
     random_seed= 42
     
@@ -39,6 +47,8 @@ class CONFIG:
 
     prob_fm = 0.45
 
+
+fix_seed(CONFIG.random_seed)
 
 data_path = '/kaggle/input/birdclef-2023'
 
@@ -67,6 +77,7 @@ def crop_or_pad(audio, target_len = CONFIG.target_len
             idx = torch.randint(high=diff_len, size=[], dtype=torch.int32)
             audio = audio[idx.item(): (idx.item() + target_len)]
     return torch.reshape(audio, [target_len])
+
 
 def audio_augment(audio):
     augment = Compose([
@@ -106,6 +117,7 @@ def spec_augmentation(spec):
     else:
         spec = transfom2(spec)
     return spec
+
 
 def spec_norm(mel_spectrogram):
     mel_spectrogram = mel_spectrogram[0]
