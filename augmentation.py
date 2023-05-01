@@ -5,7 +5,7 @@ from audiomentations import Compose, AddGaussianNoise, TimeStretch, PitchShift, 
 
 def audio_augmentation(audio,aug_type,cfg):
     if aug_type==0:
-        aug_audio = audio
+        return audio
     else:
         augments = [
             AddGaussianNoise(min_amplitude=0.001, max_amplitude=0.015, p=1.0),
@@ -16,4 +16,4 @@ def audio_augmentation(audio,aug_type,cfg):
         audio = audio.numpy()
         aug_audio = augments[aug_type-1](samples=audio, sample_rate=cfg.sample_rate)
     
-    return torch.tensor(aug_audio)
+        return torch.tensor(aug_audio)
