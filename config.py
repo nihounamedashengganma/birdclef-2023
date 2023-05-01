@@ -19,4 +19,4 @@ class CONFIG:
     fmax = 14000
     normalize = True
 
-    prob_fm = 0.45
+    prob_fm = 0.8

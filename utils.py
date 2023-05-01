@@ -30,7 +30,7 @@ def spec_augmentation(spec):
     #  Add random factor to Frequency Masking
     rand_prob = float(torch.rand(1))
     transfom1 = torchaudio.transforms.FrequencyMasking(freq_mask_param=10)
-    transfom2 = torchaudio.transforms.TimeMasking(time_mask_param=25,p=0.5)
+    transfom2 = torchaudio.transforms.TimeMasking(time_mask_param=25,p=0.2)
     if rand_prob >= CONFIG.prob_fm:
         spec = transfom1(spec)
         spec = transfom2(spec)
@@ -56,7 +56,7 @@ def train_val_split(df,n_splits=5):
     
     return df
 
-def filter_data(df, thr=25):
+def filter_data(df, thr=5):
     '''
     筛选小类别数据，后续不放入验证集中
     '''
@@ -75,7 +75,7 @@ def filter_data(df, thr=25):
     # Return the filtered dataframe
     return df
 
-def upsample_data(df, thr=100,seed=666):
+def upsample_data(df, thr=20,seed=666):
 
     # get the class distribution
     class_dist = df['primary_label'].value_counts()

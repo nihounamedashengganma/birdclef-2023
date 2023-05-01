@@ -51,28 +51,29 @@ data_path = '/data'
 meta_train2023 = prepare_data(data_path)
 
 
-aug_meta_train2023_li = [meta_train2023]
-
-for i in range(1,5): # 4 types of augmentations
-    aug_meta_train2023 = meta_train2023.copy()
-    aug_meta_train2023['aug_type'] = i
-    aug_meta_train2023_li.append(aug_meta_train2023)
-
-# 包括原始数据 + 4种不同类型的增强数据
-train2023 = pd.concat(aug_meta_train2023_li).reset_index(drop=True)
-
 # 打上 #split
-train2023 = train_val_split(train2023)
+meta_train2023 = train_val_split(meta_train2023)
 
 # 打上 小类别标记
-train2023 = filter_data(train2023)
+meta_train2023 = filter_data(meta_train2023)
 
 # 上采样
-up_df = upsample_data(train2023,thr=100,seed=CONFIG.random_seed)
+up_df = upsample_data(meta_train2023,thr=20,seed=CONFIG.random_seed)
 
 # 划分训练和验证集
 train_df =up_df.query("fold!=4 | ~cv").reset_index(drop=True)
 valid_df = up_df.query("fold==4 & cv").reset_index(drop=True)
+
+# 对训练样本做增强
+aug_train_df_li = [train_df]
+
+for i in range(1,5): # 4 types of augmentations
+    aug_train_df = train_df.copy()
+    aug_train_df['aug_type'] = i
+    aug_train_df_li.append(aug_train_df)
+
+# 包括原始数据 + 4种不同类型的增强数据
+train_df = pd.concat(aug_train_df_li).reset_index(drop=True)
 
 training_data = AudioDataset(train_df,CONFIG,is_train=True)
 valid_data = AudioDataset(valid_df,CONFIG,is_train=False)

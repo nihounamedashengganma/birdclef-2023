@@ -26,7 +26,7 @@ class AudioDataset(Dataset):
         audio= audio_augmentation(audio,aug_type,self.cfg)
      
         spec = get_spectrogram(audio)
-        if aug_type==0:
+        if aug_type==0 and self.is_train:
             spec = spec_augmentation(spec)
         spec = spec[0]
 
