@@ -38,6 +38,17 @@ def spec_augmentation(spec):
         spec = transfom2(spec)
     return spec
 
+def spec_augmentation_sep(spec,aug_type):
+    '''
+    单一维度的梅尔谱图增强
+    '''
+    augments = [torchaudio.transforms.FrequencyMasking(freq_mask_param=10),
+                torchaudio.transforms.TimeMasking(time_mask_param=25)]
+
+    spec = augments[aug_type-5](spec)
+
+    return spec
+
 
 def train_val_split(df,n_splits=5):
     '''

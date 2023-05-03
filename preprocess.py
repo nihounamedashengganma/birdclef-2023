@@ -23,6 +23,13 @@ def crop_or_pad(audio, target_len = CONFIG.target_len
     return torch.reshape(audio, [target_len])
 
 
+def downstream_data_norm(data,min_v,max_v):
+    '''
+    基于训练样本对数据做min-max normalization
+    '''
+    return (data - min_v) / (max_v - min_v)
+
+
 def efficientnet_base_norm(pretrained=True):
     '''
     基于efficientnet训练样本的图像特征（mean & std)对下游任务样本做归一化
