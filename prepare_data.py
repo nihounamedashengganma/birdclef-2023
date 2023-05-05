@@ -62,7 +62,10 @@ def class_data_augmentation(df,aug_dic,num_classes,thr,seed):
         
         # 做不同类型的增强
         for idx,(k,v) in enumerate(aug.items()):
-            tmp_df.loc[int(v[0]*num_total_sample):int(v[1]*num_total_sample),'aug_type'] = idx+1
+            if v[1]!=1.0:
+                tmp_df.loc[int(v[0]*num_total_sample):int(v[1]*num_total_sample),'aug_type'] = idx+1
+            else:
+                tmp_df.loc[int(v[0]*num_total_sample):,'aug_type'] = idx+1
 
         aug_dfs.append(tmp_df)
     

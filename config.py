@@ -20,6 +20,6 @@ class CONFIG:
     normalize = True
 
     prob_fm = 0.8
-
-    min_pixel = None
-    max_pixel = None
+    
+    min_pixel = -100.0
+    max_pixel = 41.67259979248047
