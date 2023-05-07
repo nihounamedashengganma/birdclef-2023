@@ -17,7 +17,7 @@ import random
 import cv2
 from config import CONFIG
 from augmentation import audio_augmentation
-from preprocess import crop_or_pad,efficientnet_base_norm
+from preprocess import crop_or_pad,efficientnet_base_norm,downstream_data_norm
 from utils import get_spectrogram,spec_augmentation,train_val_split,filter_data,upsample_data
 from audio_dataset import AudioDataset_fin
 from model import build_model
