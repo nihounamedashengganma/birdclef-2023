@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import Adam
-from torch.optim.lr_scheduler import OneCycleLR
+from torch.optim.lr_scheduler import OneCycleLR,StepLR
 from tqdm import tqdm
 
 
@@ -36,13 +36,16 @@ def model_train(model,model_name,train_dataloader,val_dataloader,epochs,lr,devic
     # define optimizer
     optimizer = Adam(model.parameters(),lr = lr)
 
-    # define lr scheduler
-    scheduler = OneCycleLR(optimizer,
-                           max_lr=lr,
-                           steps_per_epoch=len(train_dataloader),
-                           epochs=epochs,
-                           div_factor=100,
-                           final_div_factor=100)
+    # # define lr scheduler
+    # scheduler = OneCycleLR(optimizer,
+    #                        max_lr=lr,
+    #                        steps_per_epoch=len(train_dataloader),
+    #                        epochs=epochs,
+    #                        div_factor=100,
+    #                        final_div_factor=100)
+    scheduler = StepLR(optimizer,
+                       step_size=5,
+                       gamma=0.5)
 
 
     # define loss func
@@ -70,7 +73,7 @@ def model_train(model,model_name,train_dataloader,val_dataloader,epochs,lr,devic
 
             train_loss += batch_loss
 
-            scheduler.step() # 更新scheduler
+            # scheduler.step() # 更新scheduler
         
         train_loss /= (step+1)
 
@@ -84,3 +87,5 @@ def model_train(model,model_name,train_dataloader,val_dataloader,epochs,lr,devic
             best_epoch = epoch
 
             torch.save(model.state_dict(),f'{model_name}.pkl')
+        
+        scheduler.step()

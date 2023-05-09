@@ -462,7 +462,7 @@ class Test_AudioDataset(Dataset):
         spec_imgs = [torch.stack([spec,spec,spec],dim=0) for spec in specs]
 
         # scale to [0,1]
-        sspec_imgs = [downstream_data_norm(spec_img,self.cfg.min_pixel,self.cfg.max_pixel) for spec_img in spec_imgs]
+        spec_imgs = [downstream_data_norm(spec_img,self.cfg.min_pixel,self.cfg.max_pixel) for spec_img in spec_imgs]
 
         normalizer = efficientnet_base_norm()
         
