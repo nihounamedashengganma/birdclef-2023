@@ -60,12 +60,12 @@ class AudioDataset_tmp(Dataset):
         audio = torch.tensor(audio)
         audio = crop_or_pad(audio)
         
-        if aug_type <= 4: # 4 types of audio augmentations
+        if aug_type <= 8: # total 8 types of audio augmentations
             audio= audio_augmentation(audio,aug_type,self.cfg)
      
         spec = get_spectrogram(audio)
 
-        if aug_type >= 5:
+        if aug_type >= 9:
             spec = spec_augmentation_sep(spec)
         
         spec = spec[0]
